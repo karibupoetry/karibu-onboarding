@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karibu Poetry — Volunteer Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBF7F0;
+  --surface:#FFFFFF;
+  --surface2:#F5EFE6;
+  --ink:#1A1208;
+  --ink2:#3D2E1A;
+  --muted:#7A6A55;
+  --soft:#A8967E;
+  --border:#E8DDD0;
+  --gold:#C9943A;
+  --gold-light:#E8B45A;
+  --gold-pale:#FDF3E3;
+  --terra:#C4522A;
+  --terra-pale:#FDF0EB;
+  --sage:#4A7C59;
+  --sage-pale:#EBF4EE;
+  --mauve:#7B5EA7;
+  --mauve-pale:#F2EEF8;
+  --white:#FFFFFF;
+  --ok:#4A7C59;
+  --err:#C4522A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:1000;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;transition:opacity .8s ease;overflow:hidden}
+#splash::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9943A' fill-opacity='0.06'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");animation:patMove 20s linear infinite}
+@keyframes patMove{from{background-position:0 0}to{background-position:80px 80px}}
+#splash.fade-out{opacity:0;pointer-events:none}
+.splash-ring{width:90px;height:90px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 2rem;animation:pulseRing 3s ease-in-out infinite;opacity:0;animation-fill-mode:forwards;animation-delay:.3s}
+@keyframes pulseRing{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(201,148,58,.3)}50%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(201,148,58,.0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.splash-word{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;color:var(--white);letter-spacing:.02em;line-height:1;opacity:0;animation:fadeUp .9s ease forwards .5s}
+.splash-word span{color:var(--gold)}
+.splash-sub{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);margin-top:.6rem;opacity:0;animation:fadeUp .9s ease forwards .8s}
+.splash-rebrand{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:#444;margin-top:.4rem;opacity:0;animation:fadeUp .9s ease forwards 1s}
+.splash-divider{width:48px;height:1px;background:var(--gold);margin:2rem auto;opacity:0;animation:fadeUp .9s ease forwards 1.1s}
+.splash-quote{font-family:'Playfair Display',serif;font-style:italic;color:rgba(255,255,255,.55);font-size:clamp(.95rem,2.5vw,1.15rem);line-height:1.9;max-width:460px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .9s ease forwards 1.3s}
+.splash-quote strong{color:var(--gold-light);font-style:normal}
+.btn-enter{background:var(--gold);color:var(--ink);border:none;padding:.9rem 2.5rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;border-radius:100px;cursor:pointer;transition:all .25s ease;opacity:0;animation:fadeUp .9s ease forwards 1.8s}
+.btn-enter:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,148,58,.35)}
+
+/* ── NAV ── */
+#app{display:none;min-height:100vh}
+#app.visible{display:block}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 16px rgba(26,18,8,.06)}
+.nav-logo{font-family:'Playfair Display',serif;color:var(--ink);font-size:1.15rem;font-weight:700}
+.nav-logo span{color:var(--gold)}
+.day-tabs{display:flex;gap:.35rem}
+.day-tab{background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:.38rem .95rem;border-radius:100px;font-size:.7rem;font-family:'Space Mono',monospace;cursor:pointer;transition:all .2s;letter-spacing:.06em;text-transform:uppercase}
+.day-tab.active{background:var(--gold);border-color:var(--gold);color:var(--white);font-weight:700}
+.day-tab.unlocked:not(.active):hover{border-color:var(--gold);color:var(--gold)}
+.day-tab.locked{opacity:.35;cursor:not-allowed}
+
+/* ── PROGRESS ── */
+.prog-wrap{background:var(--white);padding:.45rem 2rem .55rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1.25rem}
+.prog-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.prog-track{flex:1;background:var(--border);height:3px;border-radius:100px;overflow:hidden}
+.prog-fill{background:linear-gradient(90deg,var(--terra),var(--gold));height:100%;border-radius:100px;transition:width .6s ease;width:0%}
+.prog-pct{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--gold);white-space:nowrap}
+
+/* ── SECTIONS ── */
+.section{display:none;animation:secIn .4s ease}
+.section.active{display:block}
+@keyframes secIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{background:var(--ink);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9943A' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--bg))}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;position:relative}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,4.2rem);color:var(--white);font-weight:700;line-height:1.05;margin-bottom:1.25rem;position:relative}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero p{color:rgba(255,255,255,.5);font-size:.95rem;max-width:500px;margin:0 auto;line-height:1.75;font-weight:300;position:relative}
+
+/* ── LAYOUT ── */
+.wrap{max-width:820px;margin:0 auto;padding:3rem 2rem}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 2px 12px rgba(26,18,8,.04)}
+.clabel{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.card h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--ink);font-weight:700;margin-bottom:.75rem;line-height:1.2}
+.card p{color:var(--muted);line-height:1.75;font-size:.9rem;font-weight:300}
+
+/* ── QUOTE PANEL ── */
+.qpanel{border-left:3px solid var(--gold);padding:2rem 2rem 2rem 2.5rem;background:var(--gold-pale);border-radius:0 16px 16px 0;margin-bottom:1.5rem}
+.qpanel p{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:1.1rem;line-height:1.9}
+.qattr{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-top:1.25rem}
+
+/* ── ORIGIN STEPS ── */
+.ostep{display:flex;gap:1.25rem;margin-bottom:2rem;align-items:flex-start}
+.odot{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--gold-pale);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.ocontent h4{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--ink);font-weight:700;margin-bottom:.3rem}
+.ocontent p{color:var(--muted);font-size:.85rem;line-height:1.7;font-weight:300}
+
+/* ── QUIZ ── */
+.quiz{background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem}
+.qq{font-family:'Playfair Display',serif;color:var(--ink);font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;line-height:1.45}
+.qopts{display:flex;flex-direction:column;gap:.6rem}
+.qopt{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:.9rem 1.25rem;color:var(--muted);font-size:.85rem;cursor:pointer;transition:all .2s;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;font-weight:400}
+.qopt:hover:not(:disabled){border-color:var(--gold);color:var(--ink);background:var(--gold-pale)}
+.qopt.correct{border-color:var(--ok);color:var(--ok);background:var(--sage-pale)}
+.qopt.wrong{border-color:var(--err);color:var(--err);background:var(--terra-pale)}
+.qopt:disabled{cursor:default}
+.qfb{margin-top:1rem;padding:1rem 1.25rem;border-radius:10px;font-size:.85rem;line-height:1.65;display:none;font-weight:400}
+.qfb.show{display:block}
+.qfb.cfb{background:var(--sage-pale);color:var(--ok);border:1.5px solid rgba(74,124,89,.25)}
+.qfb.wfb{background:var(--terra-pale);color:var(--err);border:1.5px solid rgba(196,82,42,.25)}
+
+/* ── LINGO CARDS ── */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.75rem;margin-top:1.5rem}
+.lcard{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--terra),var(--gold));opacity:0;transition:opacity .25s}
+.lcard:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,148,58,.12)}
+.lcard:hover::before,.lcard.rev::before{opacity:1}
+.lcard.rev{border-color:var(--sage);background:var(--sage-pale)}
+.lphrase{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);font-weight:700;margin-bottom:.4rem}
+.ltap{color:var(--soft);font-size:.72rem;font-style:italic}
+.lmean{color:var(--ink2);font-size:.83rem;line-height:1.6;display:none}
+.lgest{color:var(--muted);font-size:.75rem;margin-top:.5rem;font-style:italic;display:none}
+.lcard.rev .lmean,.lcard.rev .lgest{display:block}
+.lcard.rev .ltap{display:none}
+.lcard.rev .lphrase{color:var(--sage)}
+
+/* ── CONDUCT GRID ── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.ccol{border-radius:14px;padding:1.5rem}
+.ccol.do{background:var(--sage-pale);border:1.5px solid rgba(74,124,89,.2)}
+.ccol.dont{background:var(--terra-pale);border:1.5px solid rgba(196,82,42,.2)}
+.chead{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1.5px solid currentColor;opacity:.5}
+.ccol.do .chead{color:var(--ok)}
+.ccol.dont .chead{color:var(--err)}
+.clist{list-style:none;display:flex;flex-direction:column;gap:.65rem}
+.clist li{font-size:.82rem;line-height:1.55}
+.ccol.do .clist li{color:var(--ink2)}
+.ccol.dont .clist li{color:var(--ink2)}
+
+/* ── VALUES GRID ── */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.vblock{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:2rem;position:relative;overflow:hidden}
+.vblock::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--terra),var(--gold))}
+.vname{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ink);font-weight:700;margin-bottom:.75rem}
+.vblock p{color:var(--muted);font-size:.85rem;line-height:1.7}
+
+/* ── COMMS GRID ── */
+.comgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1rem;margin-bottom:1.5rem}
+.comblock{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .2s}
+.comblock:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,148,58,.1)}
+.comicon{font-size:1.6rem;margin-bottom:.75rem;display:block}
+.comtitle{font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.5rem}
+.comblock p{color:var(--muted);font-size:.8rem;line-height:1.6}
+
+/* ── EVENT BLOCKS ── */
+.evgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem}
+.evblock{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:2rem;transition:all .2s;position:relative;overflow:hidden}
+.evblock::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.evblock:nth-child(1)::before{background:var(--sage)}
+.evblock:nth-child(2)::before{background:var(--mauve)}
+.evblock:nth-child(3)::before{background:var(--terra)}
+.evicon{font-size:1.75rem;margin-bottom:1rem;display:block}
+.evname{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--ink);font-weight:700;margin-bottom:.75rem}
+.evblock p{color:var(--muted);font-size:.82rem;line-height:1.65}
+.evblock strong{color:var(--terra);font-weight:600}
+
+/* ── TIMELINE ── */
+.tpool{display:flex;flex-wrap:wrap;gap:.6rem;padding:1.25rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:.5rem}
+.tchip{background:var(--white);border:1.5px solid var(--border);color:var(--ink2);padding:.4rem .85rem;border-radius:100px;font-size:.78rem;cursor:grab;transition:all .2s;user-select:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.tchip:hover:not(.used){border-color:var(--gold);color:var(--gold);background:var(--gold-pale)}
+.tchip.used{opacity:.25;cursor:default;pointer-events:none}
+.tslots{display:flex;flex-direction:column;gap:.4rem;margin-top:1rem}
+.tslot{display:flex;align-items:center;gap:1rem;border:1.5px dashed var(--border);border-radius:10px;padding:.75rem 1rem;min-height:52px;transition:all .2s;cursor:default}
+.tslot.dov{border-color:var(--gold);background:var(--gold-pale)}
+.tslot.filled{border-style:solid;border-color:rgba(201,148,58,.4);background:var(--gold-pale)}
+.tslot.correct{border-color:var(--ok);background:var(--sage-pale)}
+.tslot.wrong{border-color:var(--err);background:var(--terra-pale)}
+.stime{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--gold);white-space:nowrap;min-width:55px;font-weight:700}
+.scont{color:var(--muted);font-size:.82rem}
+.scont.placed{color:var(--ink2);font-weight:500}
+.tiphint{font-size:.72rem;color:var(--muted);font-style:italic;margin-bottom:.75rem;padding:.5rem .75rem;background:var(--gold-pale);border-radius:8px;border:1px solid rgba(201,148,58,.2)}
+
+/* ── ROLE REVEAL CARDS ── */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:1rem;margin-top:1.5rem}
+.rcard{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;cursor:pointer;transition:all .25s;text-align:left;position:relative;overflow:hidden}
+.rcard::before{content:'Tap to reveal';position:absolute;inset:0;background:var(--white);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;font-family:'Space Mono',monospace;transition:opacity .3s}
+.rcard.revealed::before{opacity:0;pointer-events:none}
+.rcard:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,148,58,.12);transform:translateY(-2px)}
+.rcard.revealed{border-color:var(--terra);background:var(--terra-pale)}
+.ricn{font-size:1.5rem;margin-bottom:.75rem;display:block}
+.rname{font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.rdesc{color:var(--muted);font-size:.75rem;line-height:1.55}
+
+/* ── CRISIS ── */
+.crisis{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem}
+.clbl{display:block;width:fit-content;background:var(--terra-pale);color:var(--terra);border:1px solid rgba(196,82,42,.2);padding:.2rem .65rem;border-radius:100px;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;font-weight:700}
+.cscene{color:var(--ink2);font-size:.88rem;line-height:1.75;margin-bottom:1.5rem;padding:1.25rem;background:var(--surface2);border-left:3px solid var(--gold);border-radius:0 10px 10px 0}
+.sce-q{color:var(--muted);font-size:.8rem;margin-bottom:1rem;font-style:italic}
+
+/* ── SKILL TREE ── */
+.stree{display:flex;flex-direction:column;gap:.5rem}
+.slevel{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:2rem;border-left:4px solid var(--soft);transition:all .3s}
+.slevel.act{border-left-color:var(--gold);background:var(--gold-pale)}
+.slbl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.slevel.act .slbl{color:var(--gold)}
+.slevel h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--ink);font-weight:700;margin-bottom:.5rem}
+.slevel p{color:var(--muted);font-size:.83rem;line-height:1.65}
+.mrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.ms{background:rgba(201,148,58,.1);border:1px solid rgba(201,148,58,.2);border-radius:100px;padding:.25rem .65rem;font-size:.7rem;color:var(--gold);font-weight:600}
+
+/* ── PROFIT BAR ── */
+.pbar{display:flex;height:44px;border-radius:100px;overflow:hidden;margin:1.25rem 0;box-shadow:0 2px 12px rgba(26,18,8,.1)}
+.pseg{display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.04em}
+
+/* ── CALC ── */
+.crow{display:flex;align-items:center;gap:1rem;margin-bottom:.85rem;flex-wrap:wrap}
+.clbl2{color:var(--muted);font-size:.85rem;min-width:200px}
+.cinput{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:.5rem .85rem;color:var(--ink);font-family:'Space Mono',monospace;font-size:.85rem;width:115px;outline:none;transition:border-color .2s}
+.cinput:focus{border-color:var(--gold)}
+.cres{border-top:1px solid var(--border);padding-top:1.5rem;margin-top:1.5rem;text-align:center}
+.camt{font-family:'Playfair Display',serif;font-size:3rem;color:var(--gold);font-weight:700;line-height:1}
+.cnote{color:var(--muted);font-size:.75rem;margin-top:.5rem}
+
+/* ── FORMS ── */
+.fgrp{margin-bottom:1.25rem}
+.flbl{display:block;color:var(--ink2);font-size:.75rem;font-weight:600;margin-bottom:.4rem;letter-spacing:.04em}
+.finput,.ftarea{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;color:var(--ink);outline:none;transition:border-color .2s}
+.finput:focus,.ftarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,148,58,.08)}
+.ftarea{min-height:120px;resize:vertical}
+.fhint{font-size:.73rem;color:var(--soft);margin-top:.35rem}
+.bsubmit{background:var(--gold);color:var(--white);border:none;padding:1rem 2.5rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;border-radius:100px;cursor:pointer;transition:all .25s;width:100%}
+.bsubmit:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,148,58,.3)}
+.bcheck{background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:.7rem 1.75rem;font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;border-radius:100px;cursor:pointer;transition:all .2s;margin-top:1rem}
+.bcheck:hover{border-color:var(--gold);color:var(--gold)}
+.succ{background:var(--sage-pale);border:1.5px solid rgba(74,124,89,.2);border-radius:12px;padding:1.25rem 1.5rem;color:var(--ok);font-size:.85rem;line-height:1.7;margin-top:1.5rem;display:none}
+.succ.show{display:block}
+.enote{background:var(--gold-pale);border:1.5px solid rgba(201,148,58,.2);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.82rem;color:var(--muted)}
+.enote strong{color:var(--gold);font-weight:700;font-family:'Space Mono',monospace;font-size:.72rem}
+
+/* ── PLEDGE ── */
+.pledge{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:1.05rem;line-height:2;margin:1.5rem 0;padding:2rem;border:1.5px solid var(--border);border-radius:14px;background:var(--gold-pale)}
+.pledge strong{color:var(--ink);font-style:normal}
+.pname{color:var(--gold);font-style:normal;font-weight:700}
+.siginput{background:transparent;border:none;border-bottom:2px solid var(--gold);color:var(--ink);font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;text-align:center;padding:.5rem 1rem;width:280px;outline:none;display:block;margin:0 auto .5rem}
+.siglbl{text-align:center;color:var(--soft);font-size:.7rem;font-family:'Space Mono',monospace;letter-spacing:.1em;margin-bottom:1.5rem}
+
+/* ── STORY BLOCKS ── */
+.sblock{border-left:3px solid var(--terra);padding:1.75rem 1.75rem 1.75rem 2.25rem;background:var(--terra-pale);border-radius:0 14px 14px 0;margin-bottom:1.5rem}
+.sblock p{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:1rem;line-height:1.85}
+.sattr{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--terra);margin-top:1.25rem}
+.moral{background:var(--gold-pale);border:1.5px solid rgba(201,148,58,.25);border-radius:14px;padding:1.5rem;margin-top:1rem;margin-bottom:1.5rem}
+.moral p{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:.95rem;line-height:1.85;text-align:center}
+.moral .moral-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:block;text-align:center}
+
+/* ── ROLE PICKER ── */
+.rpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:1rem;margin-bottom:1.5rem}
+.rpcard{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;cursor:pointer;transition:all .25s;border-top:3px solid transparent}
+.rpcard:hover{border-top-color:var(--gold);box-shadow:0 4px 16px rgba(201,148,58,.12);transform:translateY(-2px)}
+.rpcard.selected{border-color:var(--gold);border-top-color:var(--gold);background:var(--gold-pale)}
+.rpicon{font-size:1.4rem;margin-bottom:.6rem;display:block}
+.rpname{font-size:.82rem;font-weight:700;color:var(--ink)}
+.rrbox{display:none;border:1.5px solid rgba(201,148,58,.3);border-radius:14px;padding:1.5rem;background:var(--gold-pale);margin-bottom:1.5rem}
+.rrtitle{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ink);font-weight:700;margin-bottom:.5rem}
+.rrdesc{color:var(--muted);font-size:.85rem;line-height:1.65}
+.rrnote{margin-top:1rem;color:var(--gold);font-size:.82rem;font-style:italic;font-family:'Playfair Display',serif}
+
+/* ── VISION ── */
+.vigrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:1rem;margin-bottom:1.5rem}
+.viblock{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:1.75rem 1.5rem;text-align:center;transition:all .2s}
+.viblock:hover{border-color:var(--gold);transform:translateY(-2px)}
+.viicon{font-size:1.75rem;margin-bottom:.75rem;display:block}
+.vititle{font-size:.82rem;font-weight:700;color:var(--gold);margin-bottom:.4rem}
+.viblock p{color:var(--muted);font-size:.78rem;line-height:1.6}
+
+/* ── GRADUATION ── */
+.gwrap{max-width:680px;margin:0 auto;padding:4rem 2rem;text-align:center}
+.gwrap h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--ink);font-weight:700;margin-bottom:.5rem}
+.gwrap h1 span{color:var(--gold)}
+.gsub{color:var(--muted);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:2.5rem}
+.gmsg{text-align:left;border:1.5px solid var(--border);border-radius:16px;padding:2.5rem;background:var(--white);margin-bottom:2rem;box-shadow:0 4px 24px rgba(26,18,8,.06)}
+.gmsg p{font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:1.05rem;line-height:1.9}
+.gmsg strong{color:var(--gold);font-style:normal}
+.gattr{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.gtags{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:2rem 0}
+.gtag{background:var(--gold-pale);border:1.5px solid rgba(201,148,58,.3);color:var(--gold);padding:.35rem .85rem;border-radius:100px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+
+/* ── SOCIALS ── */
+.socials-section{margin-top:2.5rem;padding-top:2.5rem;border-top:1px solid var(--border)}
+.socials-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);font-weight:700;margin-bottom:.5rem}
+.socials-sub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.socials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem}
+.social-btn{display:flex;align-items:center;gap:.6rem;padding:.75rem 1rem;border-radius:12px;text-decoration:none;font-size:.8rem;font-weight:600;transition:all .25s;border:1.5px solid transparent}
+.social-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,18,8,.1)}
+.social-btn.instagram{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-color:transparent}
+.social-btn.tiktok{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.social-btn.tiktok:hover{background:#1a1a2e}
+.social-btn.linkedin{background:#0077B5;color:var(--white);border-color:#0077B5}
+.social-btn.whatsapp{background:#25D366;color:var(--white);border-color:#25D366}
+.social-btn.whatsapp:hover{background:#128C7E}
+.social-btn span{font-size:1.1rem}
+.social-label{line-height:1.2}
+.social-label small{display:block;font-size:.65rem;opacity:.75;font-weight:400}
+
+/* ── CONFETTI ── */
+.cfwrap{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.cfp{position:absolute;animation:cffall linear forwards}
+@keyframes cffall{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(600deg)}}
+
+/* ── UTILS ── */
+hr.div{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.tries-badge{display:inline-block;background:var(--terra-pale);color:var(--terra);border:1px solid rgba(196,82,42,.2);border-radius:100px;padding:.2rem .65rem;font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;margin-left:.5rem}
+@media(max-width:640px){nav{padding:.75rem 1rem}.wrap{padding:2rem 1rem}.card{padding:1.5rem}.vgrid,.cgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div style="opacity:0;animation:fadeUp .9s ease forwards .3s;margin-bottom:2rem">
+    <div class="splash-ring">🤝</div>
+    <div class="splash-word">Karibu <span>Poetry</span></div>
+    <div class="splash-sub">Volunteer Onboarding &nbsp;·&nbsp; Three Days</div>
+    <div class="splash-rebrand">Something new is coming &nbsp;·&nbsp; Watch this space</div>
+  </div>
+  <div class="splash-divider"></div>
+  <div class="splash-quote">
+    "A safe space for every creative to feel seen and welcomed.<br>
+    United not by where we come from —<br>
+    but by what we dare to <strong>say out loud.</strong>"
+  </div>
+  <button class="btn-enter" onclick="startApp()">Step In</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav>
+    <div class="nav-logo">Karibu <span>Poetry</span></div>
+    <div class="day-tabs">
+      <button class="day-tab active" id="tab-1" onclick="goDay(1)">Day 01</button>
+      <button class="day-tab locked" id="tab-2" onclick="goDay(2)">Day 02</button>
+      <button class="day-tab locked" id="tab-3" onclick="goDay(3)">Day 03</button>
+    </div>
+  </nav>
+  <div class="prog-wrap">
+    <div class="prog-label" id="plabel">Day 01 — Foundations</div>
+    <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+    <div class="prog-pct" id="ppct">0%</div>
+  </div>
+
+  <!-- ══════════ DAY 1 ══════════ -->
+  <div class="section active" id="day1">
+    <div class="hero">
+      <div class="eyebrow">Day 01 &nbsp;·&nbsp; Foundations</div>
+      <h1>Who We <em>Are</em></h1>
+      <p>Before you can hold the space for others, you need to understand where we came from, what we stand for, and how we move together.</p>
+    </div>
+    <div class="wrap">
+
+      <div class="card">
+        <div class="clabel">Module 1.1 &nbsp;·&nbsp; Origin</div>
+        <h2>Where Karibu Poetry Began</h2>
+        <p>Every movement has a starting point. Ours starts with a young woman who saw something real, felt it deeply, and decided to do something about it.</p>
+      </div>
+
+      <div class="ostep">
+        <div class="odot">🇧🇮🇿🇦</div>
+        <div class="ocontent">
+          <h4>Born in South Africa, rooted in Burundi</h4>
+          <p>Our founder, Happiness Bujumbura, was born and raised in South Africa and is a descendant of Burundi. Growing up, she witnessed xenophobia directed at African foreign nationals — a prejudice rooted not in hatred alone but in a lack of exposure and understanding. As a creative, she turned to poetry as a way to articulate what others around her were living through. Not to be heard for her own sake, but because the experiences of those around her deserved language.</p>
+        </div>
+      </div>
+      <div class="ostep">
+        <div class="odot">🌙</div>
+        <div class="ocontent">
+          <h4>A Dream That Became a Direction</h4>
+          <p>During a season of difficulty, Happiness had a dream about Karibu Poetry — what it could be, who it could reach, and what it could change. Three years later, she acted on it. That kind of clarity does not get ignored.</p>
+        </div>
+      </div>
+      <div class="ostep">
+        <div class="odot">✈️</div>
+        <div class="ocontent">
+          <h4>Nairobi, January 5th — The First Event</h4>
+          <p>While passing through Nairobi, Kenya, Happiness hosted the very first Karibu Poetry open mic at Artcaffe Westlands — a space for poets, comedians, and singers to take the stage. What struck the audience was not just the quality of the event. It was that a young woman from a non-Swahili speaking background, someone who had not grown up in Kenya and was merely passing through, walked in and held the room with complete confidence. Many who were there left inspired to start their own creative endeavours. That is what a Karibu Poetry space does to people.</p>
+        </div>
+      </div>
+      <div class="ostep">
+        <div class="odot">🌍</div>
+        <div class="ocontent">
+          <h4>What "Karibu" Means — and Why It Matters</h4>
+          <p><em>Karibu</em> is Swahili for <strong>welcome.</strong> It is not just our name. It is the operating principle behind every event, every role, and every interaction. Everyone who steps into a Karibu Poetry space is welcomed exactly as they are.</p>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="qq">What does "Karibu" mean?</div>
+        <div class="qopts" id="q1-opts">
+          <button class="qopt" onclick="chkQ('q1',this,'wrong','q1-fb',1)">Poetry</button>
+          <button class="qopt" onclick="chkQ('q1',this,'correct','q1-fb',1)">Welcome</button>
+          <button class="qopt" onclick="chkQ('q1',this,'wrong','q1-fb',1)">Community</button>
+          <button class="qopt" onclick="chkQ('q1',this,'wrong','q1-fb',1)">Unity</button>
+        </div>
+        <div class="qfb" id="q1-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 1.2 &nbsp;·&nbsp; Values</div>
+        <h2>What We Stand On</h2>
+        <p>Two words. Everything we do comes back to these.</p>
+      </div>
+      <div class="vgrid">
+        <div class="vblock">
+          <div class="vname">Respect</div>
+          <p>Every person in our space gets the same warmth — first-time guest or famous poet walking past our door. Fame is not a currency here. Every person is.</p>
+        </div>
+        <div class="vblock">
+          <div class="vname">Humility</div>
+          <p>We are always asking what we can give, not what we can get. A volunteer who is self-centred, dismissive of feedback, or unwelcoming to others is simply not a Karibu Poetry volunteer.</p>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="qq">A well-known poet arrives at your event. A nervous first-timer is standing at the entrance. What do you do?</div>
+        <div class="qopts" id="qv1-opts">
+          <button class="qopt" onclick="chkQ('qv1',this,'correct','qv1-fb',1)">Greet the first-timer at the door. Welcome is welcome, regardless of who else just walked in.</button>
+          <button class="qopt" onclick="chkQ('qv1',this,'wrong','qv1-fb',1)">Escort the famous poet to the front row first. It's good for KP's image.</button>
+          <button class="qopt" onclick="chkQ('qv1',this,'wrong','qv1-fb',1)">Wait for direction from our virtual assistant before doing anything.</button>
+        </div>
+        <div class="qfb" id="qv1-fb"></div>
+      </div>
+
+      <div class="quiz" style="margin-top:.75rem">
+        <div class="qq">You get corrected on something at an event. You genuinely believe you handled it well. What's the Karibu Poetry move?</div>
+        <div class="qopts" id="qv2-opts">
+          <button class="qopt" onclick="chkQ('qv2',this,'wrong','qv2-fb',1)">Defend yourself immediately and explain why you were right.</button>
+          <button class="qopt" onclick="chkQ('qv2',this,'wrong','qv2-fb',1)">Say nothing but stay salty about it.</button>
+          <button class="qopt" onclick="chkQ('qv2',this,'correct','qv2-fb',1)">Receive it with an open heart. Sit with it. Ask questions privately and respectfully if you need clarity.</button>
+        </div>
+        <div class="qfb" id="qv2-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 1.3 &nbsp;·&nbsp; KP Lingo</div>
+        <h2>Speak the Language 🗣️</h2>
+        <p>We have our own shared language at Karibu Poetry — a living culture that turns every performance into a conversation. Learn these. Use them. Mean them. Tap each card to reveal.</p>
+      </div>
+      <div class="lgrid">
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Chakalaka woo 🔥</div><div class="ltap">Tap to reveal</div><div class="lmean">The poem is powerful, intense, or emotionally rich.</div><div class="lgest">Fan your hand side to side. Look around. Let the whole room feel it.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Sorrows, sorrows, prayers 💔</div><div class="ltap">Tap to reveal</div><div class="lmean">The poem is sad, deep, or mournful. It went somewhere real.</div><div class="lgest">Hand over your heart. Actually mean it.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Haibo Trevor Noah 😂</div><div class="ltap">Tap to reveal</div><div class="lmean">The poem is humorous, satirical, or brilliantly witty.</div><div class="lgest">Hand on waist, shaking your head with a grin. The energy is everything.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Okaaay, let's chow ✨</div><div class="ltap">Tap to reveal</div><div class="lmean">The performer is dropping a brand new poem.</div><div class="lgest">Lean in. Anticipation energy.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Dala what you must 💪</div><div class="ltap">Tap to reveal</div><div class="lmean">The performer is pulling out an older, beloved piece.</div><div class="lgest">Warm and supportive — like you're hyping a friend.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Okayyyy, newbie. Karibu! 🌟</div><div class="ltap">Tap to reveal</div><div class="lmean">A first-time performer is stepping up. This moment is sacred.</div><div class="lgest">Full celebration energy. Make them feel it in their chest.</div></div>
+        <div class="lcard" onclick="revL(this)"><div class="lphrase">Don't worry about it, sweetheart 🫶</div><div class="ltap">Tap to reveal</div><div class="lmean">Said to comfort a nervous or shy performer. A warm embrace in words.</div><div class="lgest">Soft. Like the person genuinely needs to hear it.</div></div>
+      </div>
+
+      <div class="quiz" style="margin-top:1.25rem">
+        <div class="qq">A first-timer walks nervously to the mic. The whole room is watching. What do you say?</div>
+        <div class="qopts" id="ql-opts">
+          <button class="qopt" onclick="chkQ('ql',this,'wrong','ql-fb',1)">Chakalaka woo!</button>
+          <button class="qopt" onclick="chkQ('ql',this,'correct','ql-fb',1)">Okayyyy, newbie. Karibu!</button>
+          <button class="qopt" onclick="chkQ('ql',this,'wrong','ql-fb',1)">Sorrows, sorrows, prayers</button>
+          <button class="qopt" onclick="chkQ('ql',this,'wrong','ql-fb',1)">Haibo Trevor Noah</button>
+        </div>
+        <div class="qfb" id="ql-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 1.4 &nbsp;·&nbsp; Communication</div>
+        <h2>How We Move 📱</h2>
+        <p>Right channel, right time. This keeps the team sharp — especially on event days.</p>
+      </div>
+      <div class="comgrid">
+        <div class="comblock"><span class="comicon">📧</span><div class="comtitle">Email</div><p>Formal stuff. Submissions. Bank letters. Reply within 24 hours. Always.</p></div>
+        <div class="comblock"><span class="comicon">💬</span><div class="comtitle">WhatsApp / Discord</div><p>Day-to-day team comms. Moving to Discord soon. Stay active — that's how you get first pick on roles.</p></div>
+        <div class="comblock"><span class="comicon">🎙️</span><div class="comtitle">Voice Notes</div><p>Use sparingly. Default to text so the team can skim and respond fast.</p></div>
+        <div class="comblock"><span class="comicon">🙋🏾‍♀️</span><div class="comtitle">Virtual Assistant</div><p>Your go-to for day-to-day questions. Urgent event stuff goes to the virtual team directly.</p></div>
+      </div>
+
+      <div class="quiz">
+        <div class="qq">It's 10:30pm the night before an event and you're unsure about your call time. What do you do?</div>
+        <div class="qopts" id="qc-opts">
+          <button class="qopt" onclick="chkQ('qc',this,'wrong','qc-fb',1)">Voice note the group walking them through your whole situation.</button>
+          <button class="qopt" onclick="chkQ('qc',this,'correct','qc-fb',1)">Send a clean, direct text to our virtual assistant or virtual team asking for your call time.</button>
+          <button class="qopt" onclick="chkQ('qc',this,'wrong','qc-fb',1)">Post in the general group and hope someone sees it.</button>
+          <button class="qopt" onclick="chkQ('qc',this,'wrong','qc-fb',1)">Don't message anyone. It's late and it might look bad.</button>
+        </div>
+        <div class="qfb" id="qc-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 1.5 &nbsp;·&nbsp; Code of Conduct</div>
+        <h2>How We Carry Ourselves</h2>
+        <p>These apply to every person on the Karibu Poetry team — not just the MC. We hold the space together.</p>
+      </div>
+      <div class="cgrid">
+        <div class="ccol do">
+          <div class="chead">Always ✅</div>
+          <ul class="clist">
+            <li>Welcome every person with equal warmth, full stop</li>
+            <li>Give first-time performers extra care and encouragement</li>
+            <li>Dress expressively. Afrocentric and arts-inspired is very welcome</li>
+            <li>Snap fingers during performances. Applause comes after</li>
+            <li>Tag @karibupoetry and the venue on socials</li>
+            <li>Confirm the correct pronunciation of every performer's name</li>
+            <li>Save event dates immediately when they're announced</li>
+          </ul>
+        </div>
+        <div class="ccol dont">
+          <div class="chead">Never ❌</div>
+          <ul class="clist">
+            <li>Beg or bully attendees for money under any circumstances</li>
+            <li>Make any guest feel uncomfortable or overwhelmed</li>
+            <li>Use classist, sexist, racist, or exclusionary language</li>
+            <li>Photograph anyone's poems or artwork without their consent</li>
+            <li>Hog the stage or make it about yourself</li>
+            <li>Treat high-profile guests differently from anyone else</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Day 01 Assignment</div>
+        <h2>Your Karibu Poetry Moment ✍🏾</h2>
+        <p>Before you can welcome others into a safe space, reflect on a time you experienced genuine welcome yourself. That's your first contribution to this community.</p>
+      </div>
+      <div class="card" style="background:var(--surface2)">
+        <div style="font-family:'Playfair Display',serif;font-style:italic;color:var(--ink2);font-size:1.05rem;line-height:1.85;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">"Tell us about a moment when you felt truly welcomed somewhere — by a person, a community, or a space. What happened? Why has it stayed with you?"</div>
+        <div class="enote"><strong>Submits directly to our team</strong> via karibupublishing@gmail.com<br>Write your moment below, or paste a Google Doc link or WeTransfer video link.</div>
+        <div class="fgrp"><label class="flbl">Full Name</label><input type="text" class="finput" id="d1n" placeholder="Your name"></div>
+        <div class="fgrp"><label class="flbl">Email</label><input type="email" class="finput" id="d1e" placeholder="your@email.com"></div>
+        <div class="fgrp"><label class="flbl">Your Karibu Poetry Moment</label><textarea class="ftarea" id="d1s" placeholder="Write here, or paste your doc / video link..."></textarea><div class="fhint">If submission fails, email karibupublishing@gmail.com directly — Subject: KP Onboarding Day 1 — [Your Name]</div></div>
+        <button class="bsubmit" onclick="sub1()">Submit My Karibu Poetry Moment 🕊️</button>
+        <div class="succ" id="d1-succ">Your submission has been sent to the Karibu Poetry team! Hit confirm below to unlock Day 2.<br><br><button class="bcheck" onclick="conf1()">Confirm and Unlock Day 2 ✓</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 2 ══════════ -->
+  <div class="section" id="day2">
+    <div class="hero">
+      <div class="eyebrow">Day 02 &nbsp;·&nbsp; Operations</div>
+      <h1>How We <em>Run</em></h1>
+      <p>You know who we are. Now let's get into how we actually make the magic happen — from the first huddle to the last debrief.</p>
+    </div>
+    <div class="wrap">
+
+      <div class="card">
+        <div class="clabel">Module 2.1 &nbsp;·&nbsp; Our Three Events</div>
+        <h2>Three Distinct Experiences 🎪</h2>
+        <p>Karibu Poetry curates three signature formats. Each one needs a different energy from you. Knowing the difference is non-negotiable.</p>
+      </div>
+      <div class="evgrid">
+        <div class="evblock"><span class="evicon">🍵</span><div class="evname">Chai &amp; Chill</div><p>Slow, healing, therapeutic. Guests write poetry and letters in a calm, low-pressure space.<br><br>Soft energy only. <strong>No chitchat.</strong> Set up flowers, rusks, grapes, tissues, paper, pencils, erasers, sharpeners. Sit with the guests — don't stand apart from them.</p></div>
+        <div class="evblock"><span class="evicon">💌</span><div class="evname">The Stranger's Script</div><p>Speed-dating through co-written poetry. Strangers write line by line with each other every 6 minutes.<br><br>You are the <strong>wingperson.</strong> Encourage connections. Hype up the timid ones. Manage the bell. Keep the energy magnetic.</p></div>
+        <div class="evblock"><span class="evicon">🎤</span><div class="evname">Open Mic Night</div><p>Vibrant and inclusive. Poets, musicians, comedians all on one stage.<br><br>Sign-up sheet on arrival. Support every performer. Use the lingo. Uphold the order. Nobody leaves that stage feeling unseen.</p></div>
+      </div>
+
+      <div class="quiz">
+        <div class="qq">You've set up flowers, tissues, rusks, and writing paper. A guest arrives and tries to chat about their day. What kind of event is this and what do you do?</div>
+        <div class="qopts" id="qev-opts">
+          <button class="qopt" onclick="chkQ('qev',this,'wrong','qev-fb',1)">Open Mic Night. Chat with them and point them to the sign-up sheet.</button>
+          <button class="qopt" onclick="chkQ('qev',this,'wrong','qev-fb',1)">The Stranger's Script. Ring the bell and get them to a table.</button>
+          <button class="qopt" onclick="chkQ('qev',this,'correct','qev-fb',1)">Chai and Chill. Gently guide them into the writing space. This is a healing environment — skip the chitchat and invite them to participate alongside you.</button>
+        </div>
+        <div class="qfb" id="qev-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 2.2 &nbsp;·&nbsp; Event Timeline</div>
+        <h2>Build the Evening ⏱️</h2>
+        <p>A typical Karibu Poetry event runs five hours: one hour setup, three hours event, one hour breakdown. Drag each task into its correct time slot.</p>
+      </div>
+      <div class="card" style="background:var(--surface2)">
+        <div class="tiphint">💡 Double-click any filled slot to clear it and try again. You have <strong>4 attempts</strong> — after that, we'll just show you the answers.</div>
+        <div class="clabel" style="margin-bottom:.75rem">Task Pool — Drag tasks below</div>
+        <div class="tpool" id="tpool">
+          <div class="tchip" draggable="true" data-task="huddle" ondragstart="dStart(event)">🤝 Team huddle &amp; group song</div>
+          <div class="tchip" draggable="true" data-task="sound" ondragstart="dStart(event)">🎙️ Sound check &amp; mic test</div>
+          <div class="tchip" draggable="true" data-task="reg" ondragstart="dStart(event)">📋 Registry &amp; script sheets placed</div>
+          <div class="tchip" draggable="true" data-task="doors" ondragstart="dStart(event)">🚪 Doors open, welcome drink given</div>
+          <div class="tchip" draggable="true" data-task="perf" ondragstart="dStart(event)">🎤 Performances begin</div>
+          <div class="tchip" draggable="true" data-task="mingle" ondragstart="dStart(event)">💬 Closing mingle &amp; interviews</div>
+          <div class="tchip" draggable="true" data-task="break" ondragstart="dStart(event)">🧹 Venue breakdown &amp; cleanup</div>
+          <div class="tchip" draggable="true" data-task="debrief" ondragstart="dStart(event)">📋 Verbal team debrief</div>
+        </div>
+        <div class="tslots" id="tslots">
+          <div class="tslot" data-correct="huddle" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">5:00 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="sound" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">6:00 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="reg" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">6:30 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="doors" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">7:00 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="perf" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">8:20 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="mingle" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">9:00 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="break" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">9:30 PM</div><div class="scont">Drop task here</div></div>
+          <div class="tslot" data-correct="debrief" ondrop="dDrop(event)" ondragover="dOver(event)" ondragleave="dLeave(event)" ondblclick="clearSlot(this)"><div class="stime">10:00 PM</div><div class="scont">Drop task here</div></div>
+        </div>
+        <button class="bcheck" style="margin-top:1rem" onclick="chkTimeline()">Check My Timeline</button>
+        <div class="qfb" id="tl-fb" style="margin-top:1rem"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 2.3 &nbsp;·&nbsp; Volunteer Roles</div>
+        <h2>Know Every Role 🎭</h2>
+        <p>Every KP volunteer should be ready to wear multiple hats. Tap each card to reveal what the role actually involves.</p>
+      </div>
+      <div class="rgrid">
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">🎫</span><div class="rname">Tickets</div><div class="rdesc">Scan entry, manage the door flow. You never handle cash directly.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">🚶🏾</span><div class="rname">Usher</div><div class="rdesc">Guide guests to seats and help them feel oriented from the moment they walk in.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">🎤</span><div class="rname">MC / Host</div><div class="rdesc">Anchor of the event. Set the tone, introduce performers, use the lingo, protect the space. This role grows with you.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">🫂</span><div class="rname">Welcome Team</div><div class="rdesc">First face guests see. Your warmth sets the entire evening's emotional temperature. No pressure.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">📸</span><div class="rname">Photographer</div><div class="rdesc">Capture the magic. Never photograph anyone's private poems or artwork without their explicit consent.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">📱</span><div class="rname">Social Media</div><div class="rdesc">Create the Google Drive folder, collect content, post freely on your personal account. Always tag @karibupoetry and the venue.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">⏱️</span><div class="rname">Timekeeper</div><div class="rdesc">Crucial at The Stranger's Script. Every 6 minutes: new prompt, bell rings, partners switch. You are the invisible rhythm.</div></div>
+        <div class="rcard" onclick="this.classList.toggle('revealed')"><span class="ricn">🎙️</span><div class="rname">Interviewer</div><div class="rdesc">Capture guest stories during the closing mingle. You document the magic for content and community memory.</div></div>
+      </div>
+
+      <div class="quiz" style="margin-top:1.25rem">
+        <div class="qq">How are roles assigned at Karibu Poetry events?</div>
+        <div class="qopts" id="qr-opts">
+          <button class="qopt" onclick="chkQ('qr',this,'wrong','qr-fb',1)">Senior volunteers get first pick, then newer volunteers fill the remaining spots.</button>
+          <button class="qopt" onclick="chkQ('qr',this,'correct','qr-fb',1)">A poll goes out to the group. The most active and engaged volunteer gets priority. Show up in the group, show up at events.</button>
+          <button class="qopt" onclick="chkQ('qr',this,'wrong','qr-fb',1)">Happiness personally assigns every role herself.</button>
+        </div>
+        <div class="qfb" id="qr-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 2.4 &nbsp;·&nbsp; Crisis Simulator</div>
+        <h2>When Things Go Sideways 🚨</h2>
+        <p>The real measure of a Karibu Poetry volunteer is not when everything runs smoothly. It's what they do when it doesn't.</p>
+      </div>
+
+      <div class="crisis">
+        <span class="clbl">Scenario 01 &nbsp;·&nbsp; Low Turnout</span>
+        <div class="cscene">It's 7:30pm. You expected 80 people. Twelve have arrived. The performers are backstage and ready. The energy is low.</div>
+        <div class="sce-q">What's the Karibu Poetry response?</div>
+        <div class="qopts" id="qc1-opts">
+          <button class="qopt" onclick="chkQ('qc1',this,'wrong','qc1-fb',1)">Apologise to the performers and suggest scaling the event down.</button>
+          <button class="qopt" onclick="chkQ('qc1',this,'wrong','qc1-fb',1)">Quietly trim the programme to save effort.</button>
+          <button class="qopt" onclick="chkQ('qc1',this,'correct','qc1-fb',1)">Same energy as if 80 people were there. Step outside, personally invite people nearby using your invite code. Twelve people deserve the full experience.</button>
+        </div>
+        <div class="qfb" id="qc1-fb"></div>
+      </div>
+
+      <div class="crisis">
+        <span class="clbl">Scenario 02 &nbsp;·&nbsp; Sound Cuts Out</span>
+        <div class="cscene">Mid-performance, the sound system dies. Dead silence. The performer is frozen at the mic. The audience starts murmuring.</div>
+        <div class="sce-q">What do you do right now?</div>
+        <div class="qopts" id="qc2-opts">
+          <button class="qopt" onclick="chkQ('qc2',this,'wrong','qc2-fb',1)">Announce the event is paused and ask everyone to wait quietly.</button>
+          <button class="qopt" onclick="chkQ('qc2',this,'correct','qc2-fb',1)">Smile, start clapping, get the audience creating natural acoustic energy. Signal the performer to carry on. The room becomes the sound system.</button>
+          <button class="qopt" onclick="chkQ('qc2',this,'wrong','qc2-fb',1)">Rush off to find the sound tech, leaving the performer alone on stage.</button>
+        </div>
+        <div class="qfb" id="qc2-fb"></div>
+      </div>
+
+      <div class="crisis">
+        <span class="clbl">Scenario 03 &nbsp;·&nbsp; Disruptive Guest</span>
+        <div class="cscene">A guest is talking loudly during a performance. People around them are uncomfortable. The performer is visibly distracted.</div>
+        <div class="sce-q">Your move?</div>
+        <div class="qopts" id="qc3-opts">
+          <button class="qopt" onclick="chkQ('qc3',this,'wrong','qc3-fb',1)">Call them out in front of everyone so the room knows it's not okay.</button>
+          <button class="qopt" onclick="chkQ('qc3',this,'correct','qc3-fb',1)">Move close to them. Calm, private signal to bring the volume down. If it continues, quietly guide them out. Always low-key, always kind.</button>
+          <button class="qopt" onclick="chkQ('qc3',this,'wrong','qc3-fb',1)">Ignore it. Confrontation might make things worse.</button>
+        </div>
+        <div class="qfb" id="qc3-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Day 02 Assignment</div>
+        <h2>Your Role Recommendation 🎯</h2>
+        <p>Which Karibu Poetry role fits you best right now? Pick one — honestly. This is a starting point, not a ceiling. You'll wear every hat eventually.</p>
+      </div>
+      <div class="card" style="background:var(--surface2)">
+        <div class="rpgrid" id="rp-grid">
+          <div class="rpcard" onclick="pickR(this,'Tickets 🎫','You are steady, organised, and the first line of trust. Guests know the night is in safe hands from the moment they meet you.')"><span class="rpicon">🎫</span><div class="rpname">Tickets</div></div>
+          <div class="rpcard" onclick="pickR(this,'Welcome Team 🫂','You are warmth made human. Your superpower is making strangers feel like family in under 30 seconds. That is rare.')"><span class="rpicon">🫂</span><div class="rpname">Welcome Team</div></div>
+          <div class="rpcard" onclick="pickR(this,'MC / Host 🎤','You anchor the room. You hold space with presence and confidence. This role grows with you — keep showing up.')"><span class="rpicon">🎤</span><div class="rpname">MC / Host</div></div>
+          <div class="rpcard" onclick="pickR(this,'Wingperson 💌','You connect people. At The Stranger\'s Script, you are the secret ingredient that turns shy strangers into co-authors and maybe more.')"><span class="rpicon">💌</span><div class="rpname">Wingperson</div></div>
+          <div class="rpcard" onclick="pickR(this,'Photographer 📸','You see the unseen moments. The nervous smile, the teary eye, the hand extended. Your lens keeps the memory alive.')"><span class="rpicon">📸</span><div class="rpname">Photographer</div></div>
+          <div class="rpcard" onclick="pickR(this,'Timekeeper ⏱️','You are the invisible rhythm of the night. When the timing is right, magic happens — and that is because of you.')"><span class="rpicon">⏱️</span><div class="rpname">Timekeeper</div></div>
+        </div>
+        <div class="rrbox" id="rr-box">
+          <div class="rrtitle" id="rr-title"></div>
+          <div class="rrdesc" id="rr-desc"></div>
+          <div class="rrnote">"But remember — every hat in the Karibu Poetry wardrobe is yours. The best volunteer sees what needs doing and does it, no matter the role."</div>
+        </div>
+        <div id="d2-form" style="display:none">
+          <div class="fgrp"><label class="flbl">Full Name</label><input type="text" class="finput" id="d2n" placeholder="Your full name"></div>
+          <div class="fgrp"><label class="flbl">Email</label><input type="email" class="finput" id="d2e" placeholder="your@email.com"></div>
+          <div class="fgrp"><label class="flbl">Reflections from Day 2 (optional)</label><textarea class="ftarea" id="d2notes" placeholder="Anything that stood out, hit different, or surprised you..." style="min-height:80px"></textarea></div>
+          <div class="enote" style="margin-top:1rem"><strong>Submits directly to our team</strong> — no email client needed.</div>
+          <button class="bsubmit" onclick="sub2()">Submit My Karibu Poetry Moment 🕊️</button>
+          <div class="succ" id="d2-succ">Your Day 2 submission has been sent to the team! Confirm below to unlock Day 3.<br><br><button class="bcheck" onclick="conf2()">Confirm and Unlock Day 3 ✓</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 3 ══════════ -->
+  <div class="section" id="day3">
+    <div class="hero">
+      <div class="eyebrow">Day 03 &nbsp;·&nbsp; Advancement</div>
+      <h1>What Is <em>Possible</em></h1>
+      <p>You know who we are and how we run. Now discover what opens up when you show up consistently and serve with a genuine heart.</p>
+    </div>
+    <div class="wrap">
+
+      <div class="card">
+        <div class="clabel">Module 3.1 &nbsp;·&nbsp; Growth Path</div>
+        <h2>Six Months to Leadership 🌱</h2>
+        <p>Leadership at Karibu Poetry is never handed out. It is earned. Every Head of KP was once exactly where you are right now.</p>
+      </div>
+      <div class="stree">
+        <div class="slevel act"><div class="slbl">Month 00 &nbsp;·&nbsp; You Are Here</div><h3>Volunteer Onboarding</h3><p>Three-day onboarding done. You're in the group. You know the lingo. Now the actual work begins.</p><div class="mrow"><div class="ms">Onboarding complete</div><div class="ms">Added to team group</div><div class="ms">First event attended</div></div></div>
+        <div class="slevel act"><div class="slbl">Month 01 &nbsp;·&nbsp; First Review</div><h3>Active Contributor</h3><p>You show up, respond fast, take roles, and ask for more without being prompted. Month 1 check-in with the team.</p><div class="mrow"><div class="ms">24hr response rule</div><div class="ms">Active in the group</div><div class="ms">Taking initiative</div><div class="ms">1-month check-in</div></div></div>
+        <div class="slevel act"><div class="slbl">Month 03 &nbsp;·&nbsp; Second Review</div><h3>Role Specialist</h3><p>You've found your lane and you're showing up in it consistently. You've earned a title through being present and reliable.</p><div class="mrow"><div class="ms">Consistent role attendance</div><div class="ms">MCing or planning events</div><div class="ms">Contributing marketing ideas</div><div class="ms">3-month review</div></div></div>
+        <div class="slevel act"><div class="slbl">Month 06 &nbsp;·&nbsp; Final Vote</div><h3>Head of Karibu Poetry</h3><p>Six months of showing up and leading without being asked. Your fellow volunteers vote. Leadership at KP is a gift from your community — not a title you claim.</p><div class="mrow"><div class="ms">Peer vote</div><div class="ms">30% profit share</div><div class="ms">City leadership</div><div class="ms">Unlimited earning</div></div></div>
+      </div>
+
+      <div class="quiz" style="margin-top:1.25rem">
+        <div class="qq">What makes a volunteer actually stand out at Karibu Poetry?</div>
+        <div class="qopts" id="qso-opts">
+          <button class="qopt" onclick="chkQ('qso',this,'wrong','qso-fb',1)">Being the most talented person in the room and performing at every event.</button>
+          <button class="qopt" onclick="chkQ('qso',this,'wrong','qso-fb',1)">Knowing the founders personally and staying in their good graces.</button>
+          <button class="qopt" onclick="chkQ('qso',this,'correct','qso-fb',1)">Consistency. Responsiveness. Taking initiative. Asking for more to do. Showing up with a servant heart every time.</button>
+        </div>
+        <div class="qfb" id="qso-fb"></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 3.2 &nbsp;·&nbsp; Earning Potential</div>
+        <h2>How You Can Earn 💰</h2>
+        <p>Karibu Poetry is a donation-based collective. All volunteer roles are unpaid. But there are real ways to earn as you grow and contribute.</p>
+      </div>
+      <div class="evgrid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+        <div class="evblock"><span class="evicon">🔗</span><div class="evname">Invite Code Commission</div><p>Every volunteer gets a personal invite code. When guests use it and you hit the event threshold, you earn commission. Paid monthly. Send your bank confirmation letter to karibupublishing@gmail.com to get set up.</p></div>
+        <div class="evblock"><span class="evicon">🎤</span><div class="evname">MC Hourly Rate</div><p>After one year of consistent volunteer MCing, you earn a standard agreed-upon hourly rate per event. The patience is worth it.</p></div>
+        <div class="evblock"><span class="evicon">📊</span><div class="evname">Head of KP Profit Share</div><p>30% of event profits go to the Head or Heads of KP. Unlimited earning potential as the platform grows.</p></div>
+      </div>
+
+      <div class="card" style="background:var(--surface2)">
+        <div class="clabel" style="margin-bottom:1rem">Profit Share Breakdown</div>
+        <div class="pbar">
+          <div class="pseg" style="flex:30;background:var(--gold);color:var(--white)">30% Head of KP</div>
+          <div class="pseg" style="flex:40;background:var(--mauve);color:var(--white)">40% Branch</div>
+          <div class="pseg" style="flex:30;background:var(--terra);color:var(--white)">30% KP Central</div>
+        </div>
+        <div style="color:var(--muted);font-size:.8rem;line-height:1.65">The 40% retained by the branch funds local operations, venue costs, and growth. KP Central supports founders, administration, and the global platform.</div>
+        <div style="border-top:1px solid var(--border);margin-top:1.5rem;padding-top:1.5rem">
+          <div class="clabel" style="margin-bottom:1rem">Invite Code Simulator</div>
+          <div class="crow"><span class="clbl2">Guests you personally brought in</span><input class="cinput" type="number" id="cg" value="10" min="0" oninput="calcE()"></div>
+          <div class="crow"><span class="clbl2">Ticket price (ZAR)</span><input class="cinput" type="number" id="ct" value="150" min="0" oninput="calcE()"></div>
+          <div class="crow"><span class="clbl2">Your commission rate (%)</span><input class="cinput" type="number" id="cr" value="10" min="0" max="100" oninput="calcE()"></div>
+          <div class="cres"><div class="camt" id="camt">R 150.00</div><div class="cnote">Estimated monthly commission. Actual thresholds and rates are communicated per event.</div></div>
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 3.3 &nbsp;·&nbsp; What's Possible</div>
+        <h2>This Actually Happened 🌟</h2>
+        <p>You are not the first to walk through this door. Here is what happened when those before you showed up with a servant heart.</p>
+      </div>
+
+      <div class="sblock">
+        <p>Wesley Akkid walked into a Karibu Poetry event in Nairobi with a microphone and a willingness to serve. He volunteered to MC and did it with such consistency, such presence, and such care for the space that he grew into a senior position. Not because he was the loudest person in the room. Because he was the most faithful.</p>
+        <div class="sattr">Wesley Akkid &nbsp;·&nbsp; Nairobi &nbsp;·&nbsp; Volunteer MC to Senior Team Member</div>
+      </div>
+
+      <div class="sblock">
+        <p>At one of our events in Nairobi at Bavaria Gardens, Westlands, Churchill — one of Kenya's most celebrated comedians — happened to be dining nearby. Something pulled him through the door. The energy of the room. He walked in, sat down, and performed a poem. He exchanged numbers with our team. He hadn't planned to be there. He just felt the welcome.</p>
+        <div class="sattr">Churchill &nbsp;·&nbsp; Bavaria Gardens, Nairobi &nbsp;·&nbsp; A Night That Found Us</div>
+      </div>
+
+      <div class="sblock">
+        <p>At our first Cape Town event, a young high school girl walked up to perform. She was the only performer that day. The event was short. But she delivered a poem on gender-based violence that stopped the room completely. When the footage went up on our TikTok, it went viral instantly.</p>
+        <div class="sattr">Cape Town &nbsp;·&nbsp; First Event &nbsp;·&nbsp; One Voice That Stopped the Room</div>
+      </div>
+      <div class="moral">
+        <span class="moral-label">The Lesson</span>
+        <p>You don't need a big crowd, a big budget, or a big name to create impact. You need one person given a safe space to speak their truth. The rest takes care of itself. That is what Karibu Poetry builds — and you are now part of building it.</p>
+      </div>
+
+      <div class="qpanel">
+        <p>"The more selfless you are, the more you succeed.<br>
+        The more you serve, the more opportunities you will lead.<br>
+        The more you love, the more you kill greed.<br>
+        And once you kill greed, you will succeed."</p>
+        <div class="qattr">Happiness Bujumbura &nbsp;·&nbsp; Founder, Karibu Poetry</div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Module 3.4 &nbsp;·&nbsp; The Vision</div>
+        <h2>Where We're Going 🌍</h2>
+        <p>You're joining at the ground floor of something that is meant to outlast all of us.</p>
+      </div>
+      <div class="vigrid">
+        <div class="viblock"><span class="viicon">🌍</span><div class="vititle">Africa</div><p>Cape Town and Nairobi today. Every major African city soon.</p></div>
+        <div class="viblock"><span class="viicon">🌎</span><div class="vititle">The Americas</div><p>One Head location per continent. Monthly events. The diaspora connected through poetry.</p></div>
+        <div class="viblock"><span class="viicon">🌏</span><div class="vititle">Asia and Beyond</div><p>Virtual events across every timezone. The spoken word has no borders.</p></div>
+        <div class="viblock"><span class="viicon">📍</span><div class="vititle">Your City</div><p>You could be the one who opens the first Karibu Poetry chapter in your city. That chapter hasn't been written yet.</p></div>
+      </div>
+
+      <hr class="div">
+
+      <div class="card">
+        <div class="clabel">Day 03 Assignment</div>
+        <h2>Your Six-Month Plan + Pledge 🗺️</h2>
+        <p>Map your own journey. Be honest and specific. This is a commitment you're making to yourself — and to this community.</p>
+      </div>
+      <div class="card" style="background:var(--surface2)">
+        <div class="fgrp"><label class="flbl">Full Name</label><input type="text" class="finput" id="d3n" placeholder="Your full name" oninput="updPN()"></div>
+        <div class="fgrp"><label class="flbl">Your WhatsApp Number</label><input type="tel" class="finput" id="d3w" placeholder="+27 or +254 ..."><div class="fhint">Include country code. We'll add you to the team group.</div></div>
+        <div class="fgrp"><label class="flbl">The role I most want to grow into</label><input type="text" class="finput" id="d3r" placeholder="e.g. MC, Photographer, Event Planner..."></div>
+        <div class="fgrp"><label class="flbl">What I uniquely bring to Karibu Poetry</label><textarea class="ftarea" id="d3u" placeholder="Be specific. What's your gift to this community?"></textarea></div>
+        <div class="fgrp"><label class="flbl">My commitment for the next six months</label><textarea class="ftarea" id="d3c" placeholder="Events you'll attend, roles you'll try, what you'll contribute..."></textarea></div>
+        <div style="border-top:1px solid var(--border);margin-top:1.5rem;padding-top:1.5rem">
+          <div class="clabel" style="margin-bottom:1.25rem">The Karibu Poetry Pledge</div>
+          <div class="pledge">I, <span class="pname" id="pname">___________</span>, pledge to show up for the Karibu Poetry community with a servant heart.<br><br>I will welcome others as I have been welcomed.<br>I will serve before I seek recognition.<br>I will hold the space with respect, humility, and care.<br>I will stay curious, stay humble, and stay true to Karibu Poetry.<br><br>Whether the room holds ten people or one thousand —<br><strong>I will bring the same energy. Every time.</strong></div>
+          <input type="text" class="siginput" id="psig" placeholder="Sign your name here" oninput="updPN()">
+          <div class="siglbl">Your signature seals your pledge</div>
+        </div>
+        <div class="enote"><strong>Submits directly to our team</strong> — your pledge goes straight to the Karibu Poetry inbox.</div>
+        <button class="bsubmit" onclick="sub3()">Submit My Pledge 🤝</button>
+        <div class="succ" id="d3-succ"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ GRADUATION ══════════ -->
+  <div class="section" id="graduation">
+    <div class="gwrap">
+      <div style="font-size:3rem;margin-bottom:1.5rem;animation:pulseRing 2s ease-in-out infinite">🎉</div>
+      <div style="font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Karibu Poetry &nbsp;·&nbsp; Onboarding Complete</div>
+      <h1>Welcome, <span id="gname">Volunteer</span>.</h1>
+      <div class="gsub">You are now part of the Karibu Poetry family</div>
+
+      <div class="gmsg">
+        <p>"You didn't just complete an onboarding. You stepped into a movement that started with one woman, one dream, and one open mic in Nairobi.<br><br>I started Karibu Poetry because I believed that art could build the bridges that fear tries to burn down. And every volunteer who walks through our doors is proof that belief was right.<br><br>You are now part of that proof.<br><br>Come as you are. Grow as you serve. And remember — the more selfless you are, the more you will succeed.<br><br>This space was built for you. <strong>Stay.</strong>"</p>
+        <div class="gattr">Happiness Bujumbura &nbsp;·&nbsp; Founder, Karibu Poetry</div>
+      </div>
+
+      <div class="gtags">
+        <div class="gtag">Day 01 Complete</div>
+        <div class="gtag">Day 02 Complete</div>
+        <div class="gtag">Day 03 Complete</div>
+        <div class="gtag">KP Family 🤝</div>
+      </div>
+
+      <div class="socials-section">
+        <div class="socials-title">Show Your Support 🙌</div>
+        <div class="socials-sub">Follow, engage, and let the world know you're part of something real.</div>
+        <div class="socials-grid">
+          <a class="social-btn instagram" href="https://www.instagram.com/karibupoetry/" target="_blank"><span>📸</span><div class="social-label">Instagram<small>@karibupoetry</small></div></a>
+          <a class="social-btn tiktok" href="https://www.tiktok.com/@karibupoetry" target="_blank"><span>🎵</span><div class="social-label">TikTok<small>@karibupoetry</small></div></a>
+          <a class="social-btn tiktok" href="https://www.tiktok.com/@karibupoetry.sa" target="_blank"><span>🎵</span><div class="social-label">TikTok SA<small>@karibupoetry.sa</small></div></a>
+          <a class="social-btn linkedin" href="https://www.linkedin.com/posts/karibu-poetry_karibupoetry-creativecommunity-volunteeropportunity-activity-7473652031577133057-EZ-s" target="_blank"><span>💼</span><div class="social-label">LinkedIn<small>Karibu Poetry</small></div></a>
+          <a class="social-btn whatsapp" href="https://chat.whatsapp.com/LdL9MykcgrhGkES5HJ3M3s" target="_blank"><span>💬</span><div class="social-label">WhatsApp Community<small>General Group</small></div></a>
+          <a class="social-btn whatsapp" href="https://chat.whatsapp.com/LszodtXgyYnC9BYm9fa8JC" target="_blank"><span>🤝</span><div class="social-label">WhatsApp Volunteers<small>Team Group</small></div></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="cfwrap" id="cfwrap"></div>
+
+<script>
+var ST={prog:0,name:'',role:null,tlTries:0};
+var LABELS={huddle:'🤝 Team huddle & group song',sound:'🎙️ Sound check & mic test',reg:'📋 Registry & script sheets placed',doors:'🚪 Doors open, welcome drink given',perf:'🎤 Performances begin',mingle:'💬 Closing mingle & interviews',break:'🧹 Venue breakdown & cleanup',debrief:'📋 Verbal team debrief'};
+var QD={
+  'q1':{correct:"Okaaay, let's chow! 🔥 Yes — Karibu means WELCOME. It's not just a name, it's the entire operating principle.",wrong:"Haibo Leon Schuster! 😅 Not quite, sweetheart. Think about what we want every single person walking through our door to feel. Try again!"},
+  'qv1':{correct:"Chakalaka woo! 🙌 That's the Karibu Poetry way. Every person at the door gets the same welcome. Fame doesn't change that.",wrong:"Grandma is giving you a very specific look right now 👵🏾 Our value of respect applies equally to everyone. The first-timer deserves your attention as much as anyone. Try again!"},
+  'qv2':{correct:"Dala what you must! 💪 That's humility in action. An open heart receives correction better than a defended one. Feedback is a gift.",wrong:"Haibo! 😬 Neither of those feels like Karibu Poetry. Humility means staying open, not getting smaller. Try again!"},
+  'ql':{correct:"Okayyyy, newbie. KARIBU! 🌟 That's exactly it. A first-timer stepping up to the mic needs that full, warm, celebratory welcome.",wrong:"Don't worry about it, sweetheart 🫶 Not quite — a first-timer needs something very specific. Something that celebrates their bravery. Try again!"},
+  'qc':{correct:"Okaaay, let's chow! ✨ Clean, direct text to the virtual team. No voice essays. No group panic. Just clear communication.",wrong:"Haibo Trevor Noah! 😂 Grandma has seen that mistake before. Keep it clean, direct, and text-based. Try again!"},
+  'qev':{correct:"Chakalaka woo! 🍵 You read the room perfectly. Chai and Chill is a healing space — your job is to hold the calm and invite participation.",wrong:"Sorrows, sorrows, prayers 💔 Look at what's been set up. Flowers, tissues, grapes, writing paper. What kind of evening does that signal? Try again!"},
+  'qr':{correct:"Okaaay, dala what you must! 🎯 Exactly — no seniority system here. Activity earns opportunity. Stay active and the best roles will find you.",wrong:"Haibo! 😅 Karibu Poetry doesn't run on seniority. The most active volunteer in the group gets priority. Try again!"},
+  'qc1':{correct:"That's the spirit! 🔥 Twelve people deserve a full experience. You hold the energy AND you go find more people. That's a KP volunteer.",wrong:"Grandma is shaking her head lovingly 👵🏾 We never shrink for a small crowd. We expand and we go get more people. Try again!"},
+  'qc2':{correct:"Chakalaka woo! 🎤 Smile, clap, create energy. The room becomes the sound system. Pure KP instinct right there.",wrong:"Sorrows... 😢 We never abandon a performer on stage. The show goes on and the room holds the performer up. Try again!"},
+  'qc3':{correct:"Dala what you must! 👏 Calm, private, kind, and firm. We protect the space without creating a scene.",wrong:"Haibo! 😬 We never call people out publicly, and we never ignore what's affecting others. Find the middle path. Try again!"},
+  'qso':{correct:"Okaaay! 🌟 That's it. Consistency, initiative, and a servant heart. Nothing else at Karibu Poetry comes close to that.",wrong:"Don't worry about it 🫶 Talent and connections help — but what actually builds your place here is showing up, serving, and asking for more. Try again!"}
+};
+function startApp(){document.getElementById('splash').classList.add('fade-out');setTimeout(function(){document.getElementById('splash').style.display='none';document.getElementById('app').classList.add('visible');updP(3);},800);}
+function goDay(d){var t=document.getElementById('tab-'+d);if(t&&t.classList.contains('locked'))return;document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.day-tab').forEach(function(t){t.classList.remove('active');});if(d==='grad'){document.getElementById('graduation').classList.add('active');}else{document.getElementById('day'+d).classList.add('active');if(t)t.classList.add('active');var lb={'1':'Day 01 — Foundations','2':'Day 02 — Operations','3':'Day 03 — Advancement'};document.getElementById('plabel').textContent=lb[d];}window.scrollTo(0,0);}
+function unlock(d){var t=document.getElementById('tab-'+d);if(t){t.classList.remove('locked');t.classList.add('unlocked');}}
+function updP(p){if(p>ST.prog){ST.prog=Math.min(p,100);document.getElementById('pfill').style.width=ST.prog+'%';document.getElementById('ppct').textContent=ST.prog+'%';}}
+function chkQ(id,btn,res,fbId,pts){var opts=btn.parentElement.querySelectorAll('.qopt');opts.forEach(function(o){o.disabled=true;});btn.classList.add(res);var fb=document.getElementById(fbId);fb.classList.add('show',res==='correct'?'cfb':'wfb');fb.textContent=QD[id]?QD[id][res]:(res==='correct'?'Correct!':'Not quite. Try again!');if(res==='correct'){updP(ST.prog+6);}else{setTimeout(function(){opts.forEach(function(o){o.disabled=false;o.classList.remove('wrong','correct');});fb.classList.remove('show','cfb','wfb');},2400);}}
+function revL(c){c.classList.toggle('rev');}
+var DT=null;
+function dStart(e){DT=e.target.dataset.task;}
+function dOver(e){e.preventDefault();e.currentTarget.classList.add('dov');}
+function dLeave(e){e.currentTarget.classList.remove('dov');}
+function dDrop(e){
+  e.preventDefault();var sl=e.currentTarget;sl.classList.remove('dov');
+  if(!DT)return;
+  if(sl.dataset.filled){
+    var old=sl.dataset.filled;
+    var oldChip=document.querySelector('[data-task="'+old+'"]');
+    if(oldChip){oldChip.classList.remove('used');}
+  }
+  var ch=document.querySelector('[data-task="'+DT+'"]');
+  if(ch)ch.classList.add('used');
+  var ct=sl.querySelector('.scont');
+  ct.textContent=LABELS[DT]||DT;ct.classList.add('placed');
+  sl.dataset.filled=DT;sl.classList.add('filled');sl.classList.remove('correct','wrong');
+  DT=null;
+}
+function clearSlot(sl){
+  if(!sl.dataset.filled)return;
+  var old=sl.dataset.filled;
+  var oldChip=document.querySelector('[data-task="'+old+'"]');
+  if(oldChip){oldChip.classList.remove('used');}
+  var ct=sl.querySelector('.scont');
+  ct.textContent='Drop task here';ct.classList.remove('placed');
+  delete sl.dataset.filled;sl.classList.remove('filled','correct','wrong');
+}
+function chkTimeline(){
+  ST.tlTries++;
+  var slots=document.querySelectorAll('.tslot'),ok=0;
+  slots.forEach(function(s){s.classList.remove('correct','wrong');});
+  slots.forEach(function(s){if(s.dataset.filled){if(s.dataset.filled===s.dataset.correct){ok++;s.classList.add('correct');}else{s.classList.add('wrong');}}});
+  var fb=document.getElementById('tl-fb');
+  fb.className='qfb show';
+  if(ok===8){
+    fb.classList.add('cfb');fb.textContent='Chakalaka woo! 🔥 Perfect timeline! You would have this event running like a dream.';updP(ST.prog+8);
+  } else if(ST.tlTries>=4){
+    // Reveal answers
+    var answerMap={huddle:'5:00 PM',sound:'6:00 PM',reg:'6:30 PM',doors:'7:00 PM',perf:'8:20 PM',mingle:'9:00 PM',break:'9:30 PM',debrief:'10:00 PM'};
+    slots.forEach(function(s){
+      var correct=s.dataset.correct;
+      var ct=s.querySelector('.scont');
+      ct.textContent=LABELS[correct];ct.classList.add('placed');
+      s.dataset.filled=correct;s.classList.add('filled','correct');s.classList.remove('wrong');
+      var chip=document.querySelector('[data-task="'+correct+'"]');
+      if(chip)chip.classList.add('used');
+    });
+    fb.classList.add('wfb');fb.textContent="Don't worry about it, sweetheart 🫶 You've had 4 tries — here are the correct answers. Study this before your first event!";
+  } else {
+    fb.classList.add('wfb');fb.textContent=ok+' out of 8 correct. '+(4-ST.tlTries)+' attempt'+(4-ST.tlTries===1?'':'s')+' remaining. Double-click any slot to clear it and try again!';
+  }
+}
+function pickR(card,title,desc){document.querySelectorAll('#rp-grid .rpcard').forEach(function(c){c.classList.remove('selected');});card.classList.add('selected');ST.role=title;document.getElementById('rr-title').textContent=title;document.getElementById('rr-desc').textContent=desc;document.getElementById('rr-box').style.display='block';document.getElementById('d2-form').style.display='block';document.getElementById('d2-form').scrollIntoView({behavior:'smooth',block:'start'});}
+function calcE(){var g=parseFloat(document.getElementById('cg').value)||0,t=parseFloat(document.getElementById('ct').value)||0,r=parseFloat(document.getElementById('cr').value)||0;document.getElementById('camt').textContent='R '+(g*t*(r/100)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function updPN(){var n=document.getElementById('d3n')?document.getElementById('d3n').value:'';var s=document.getElementById('psig')?document.getElementById('psig').value:'';document.getElementById('pname').textContent=(n||s)||'___________';}
+function sub1(){var n=document.getElementById('d1n').value.trim(),e=document.getElementById('d1e').value.trim(),s=document.getElementById('d1s').value.trim();if(!n||!e||!s){alert('Hey! Fill in your name, email, and your Karibu Poetry moment before submitting 🫶');return;}ST.name=n;var btn=document.querySelector('#day1 .bsubmit');btn.disabled=true;btn.textContent='Sending...';fetch('https://formspree.io/f/xeebodyg',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:n,email:e,day:'Day 1 — Karibu Poetry Moment',submission:s})}).then(function(r){if(r.ok){var sc=document.getElementById('d1-succ');sc.classList.add('show');btn.textContent='Submitted ✓';}else{alert('Something went wrong. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit';}}).catch(function(){alert('Connection error. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit';});}
+function conf1(){unlock(2);updP(30);document.getElementById('d1-succ').innerHTML='Day 1 confirmed ✅ Day 2 is now unlocked — tap it in the nav above!';}
+function sub2(){var n=document.getElementById('d2n').value.trim(),e=document.getElementById('d2e').value.trim();if(!n||!e||!ST.role){alert('Fill in your name, email, and pick a role before submitting!');return;}ST.name=n||ST.name;var notes=document.getElementById('d2notes').value;var btn=document.querySelector('#day2 .bsubmit');btn.disabled=true;btn.textContent='Sending...';fetch('https://formspree.io/f/xeebodyg',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:n,email:e,day:'Day 2 — Role Recommendation',role:ST.role,reflections:notes})}).then(function(r){if(r.ok){var sc=document.getElementById('d2-succ');sc.classList.add('show');btn.textContent='Submitted ✓';}else{alert('Something went wrong. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit';}}).catch(function(){alert('Connection error. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit';});}
+function conf2(){unlock(3);updP(65);document.getElementById('d2-succ').innerHTML='Day 2 confirmed ✅ Day 3 is now unlocked — tap it in the nav above!';}
+function sub3(){var n=document.getElementById('d3n').value.trim(),w=document.getElementById('d3w').value.trim(),r=document.getElementById('d3r').value.trim(),u=document.getElementById('d3u').value.trim(),c=document.getElementById('d3c').value.trim(),sig=document.getElementById('psig').value.trim();if(!n||!w||!r||!u||!c||!sig){alert('Complete all fields and sign your pledge before submitting 🙏');return;}ST.name=n;var btn=document.querySelector('#day3 .bsubmit');btn.disabled=true;btn.textContent='Sending your pledge...';fetch('https://formspree.io/f/xeebodyg',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:n,whatsapp:w,day:'Day 3 — Final Pledge',role_goal:r,unique_contribution:u,six_month_commitment:c,pledge_signed_by:sig})}).then(function(r){if(r.ok){var bn=document.getElementById('d3-succ');bn.classList.add('show');bn.innerHTML='Pledge received! Welcome to the Karibu Poetry family 🎉<br><br><button class="bcheck" onclick="launchGrad(\''+n.replace(/'/g,&quot;\\'\&quot;)+'\')" >Continue to Graduation 🎊</button>';btn.textContent='Pledge Submitted ✓';}else{alert('Something went wrong. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit My Pledge';}}).catch(function(){alert('Connection error. Please email karibupublishing@gmail.com directly.');btn.disabled=false;btn.textContent='Open Email to Submit My Pledge';});}
+function launchGrad(name){document.getElementById('gname').textContent=name||ST.name||'Volunteer';document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.day-tab').forEach(function(t){t.classList.remove('active');});document.getElementById('graduation').classList.add('active');window.scrollTo(0,0);updP(100);fireConf();}
+function fireConf(){var w=document.getElementById('cfwrap'),cols=['#C9943A','#E8B45A','#C4522A','#4A7C59','#7B5EA7','#FBF7F0','#3D2E1A'];for(var i=0;i<120;i++){var c=document.createElement('div');c.className='cfp';c.style.left=Math.random()*100+'vw';c.style.width=(Math.random()*10+5)+'px';c.style.height=(Math.random()*10+5)+'px';c.style.borderRadius=Math.random()>.5?'50%':'2px';c.style.background=cols[Math.floor(Math.random()*cols.length)];c.style.animationDuration=(Math.random()*3+2)+'s';c.style.animationDelay=(Math.random()*2)+'s';w.appendChild(c);}setTimeout(function(){w.innerHTML='';},7000);}
+calcE();
+</script>
+</body>
+</html>
